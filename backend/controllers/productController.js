@@ -52,6 +52,13 @@ exports.getProduct = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
+    const { name, description, price, category, image, stock } = req.body;
+    if (!name?.trim() || !description?.trim() || !category?.trim() || !image?.trim() || !Number.isFinite(Number(price)) || Number(price) <= 0 || !Number.isInteger(Number(stock)) || Number(stock) < 0) {
+      return res.status(400).json({
+        message: "Name, description, category, image, positive price, and valid stock are required"
+      });
+    }
+
     const product = await Product.create(req.body);
 
     res.status(201).json(product);

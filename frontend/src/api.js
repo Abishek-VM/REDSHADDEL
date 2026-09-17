@@ -41,10 +41,11 @@ const request = async (path, options = {}) => {
   return data;
 };
 
-export const getProducts = async (query = "") => {
+export const getProducts = async (query = "", useFallback = true) => {
   try {
     return await request(`/products${query}`);
   } catch (error) {
+    if (!useFallback) throw error;
     if (query) return fallbackProducts;
     console.warn("Product API unavailable; showing the starter catalog.", error.message);
     return fallbackProducts;
@@ -57,3 +58,5 @@ export const updateProduct = (id, body, token) => request(`/products/${id}`, { m
 export const deleteProduct = (id, token) => request(`/products/${id}`, { method: "DELETE", token });
 export const createOrder = (body, token) => request("/orders", { method: "POST", body, token });
 export const getMyOrders = (token) => request("/orders/my", { token });
+export const getAllOrders = (token) => request("/orders", { token });
+export const updateOrderStatus = (id, status, token) => request(`/orders/${id}/status`, { method: "PUT", body: { status }, token });

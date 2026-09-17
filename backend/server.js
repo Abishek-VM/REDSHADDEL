@@ -5,10 +5,11 @@ const path = require("path");
 
 const connectDB = require("./config/db");
 const seedProducts = require("./config/seedProducts");
+const seedAdmin = require("./config/seedAdmin");
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-connectDB().then(seedProducts).catch((error) => {
+connectDB().then(seedProducts).then(seedAdmin).catch((error) => {
   console.error(`Startup error: ${error.message}`);
 });
 

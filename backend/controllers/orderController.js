@@ -1,5 +1,13 @@
 const Order = require("../models/Order");
 
+const orderStatuses = [
+  "Pending",
+  "Confirmed",
+  "Shipped",
+  "Delivered",
+  "Cancelled"
+];
+
 exports.createOrder = async (req, res) => {
   try {
     const {
@@ -69,6 +77,12 @@ exports.getAllOrders = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
   try {
+    if (!orderStatuses.includes(req.body.status)) {
+      return res.status(400).json({
+        message: "Invalid order status"
+      });
+    }
+
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       {
@@ -78,6 +92,12 @@ exports.updateOrderStatus = async (req, res) => {
         new: true
       }
     );
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found"
+      });
+    }
 
     res.json(order);
   } catch (error) {
